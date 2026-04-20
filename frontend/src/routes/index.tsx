@@ -1,9 +1,23 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
+
+export type RootDirectory = {
+  path: string
+  name: string
+  size: number
+}
 
 export const Route = createFileRoute('/')({ component: App })
 
 function App() {
+  const [rootDirectories, setRootDirectories] = useState<RootDirectory[]>([
+    {
+      path: '/home/martin/Desktop',
+      name: 'Desktop',
+      size: 123456789,
+    },
+  ])
+
   const [isOnline, setIsOnline] = useState(true)
 
   return (
@@ -85,34 +99,20 @@ function App() {
       </div>
 
       <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          [
-            'Type-Safe Routing',
-            'Routes and links stay in sync across every page.',
-          ],
-          [
-            'Server Functions',
-            'Call server code from your UI without creating API boilerplate.',
-          ],
-          [
-            'Streaming by Default',
-            'Ship progressively rendered responses for faster experiences.',
-          ],
-          [
-            'Tailwind Native',
-            'Design quickly with utility-first styling and reusable tokens.',
-          ],
-        ].map(([title, desc], index) => (
-          <article
-            key={title}
-            className="island-shell feature-card rise-in rounded-2xl p-5"
-            style={{ animationDelay: `${index * 90 + 80}ms` }}
-          >
-            <h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-              {title}
-            </h2>
-            <p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
-          </article>
+        {rootDirectories.map((dir, index) => (
+          <Link to={`/in/${btoa(dir.path)}`} key={dir.path}>
+            <article
+              className="island-shell feature-card rise-in rounded-2xl p-5"
+              style={{ animationDelay: `${index * 90 + 80}ms` }}
+            >
+              <h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
+                {dir.name}
+              </h2>
+              <p className="m-0 text-sm text-[var(--sea-ink-soft)]">
+                {dir.size} bytes
+              </p>
+            </article>
+          </Link>
         ))}
       </section>
 
